@@ -1,4 +1,4 @@
-# blackJack
+# BLACK JACK
 
 ## But du jeu :
 Le Blackjack est un jeu de cartes dans lequel le joueur tente de battre le casino(represente par le croupier).
