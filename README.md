@@ -1,6 +1,6 @@
 # blackJack
 
-But du jeu :
+## But du jeu :
 Le Blackjack est un jeu de cartes dans lequel le joueur tente de battre le casino(represente par le croupier).
 
 il faut pour cela :
@@ -29,16 +29,9 @@ le joueur peut demande une ou plusieurs cartes jusqu'a ce qu'il souhaite arreter
 si la main du joueur depasse 21 on dit qu'il a sauté et perd sa mise , ces cartes et sa mise sont collectés par le croupier.
 le blackJack sera toujours vainqueur face a une main de 21. (ex : 10 pique + 4 coeur + 7 pique)
 
-Action Donneur :
+## Action Donneur :
 quand tous les joueurs ont joué, et si il reste des joueurs qui n'ont pas sauté .
 le donneur decouvre sa carte caché et se ditribue des cartes si besoin.et ce jusqu'a ce que sa main ai atteint 17 ou plus.
 Si le donneur 'saute'  il paie les joueurs restant , sinon il paie le joueurs qui a une main plus forte que lui.
 
-1) Definition 
-nom : le types de noms des joueurs
-cartes : paire d'un nombre (1 ...10) ou figure (V,R,D) et couleur
-main : liste de cartes qui decrive la main d'un joueur ou du croupier ou le jeu
-argent : representation de l'argent ex (20 euros)
-croupier : description de sa main
-joueur : nom, sa main,l'argent dans sa poche et sa mise sur la table
-Table : croupier et la liste des joueurs.
+
