@@ -136,7 +136,11 @@ namespace BlackJack
         }
 
 
-
+        /// <summary>
+        /// Definit qui est le meilleur joueur
+        /// </summary>
+        /// <param name="j"></param>
+        /// <param name="points"></param>
         public void WinnerPlayer(Joueur j, int points)
         {
          
