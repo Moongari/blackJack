@@ -9,7 +9,7 @@ namespace BlackJack
 {
     public interface IMain
     {
-        void GiveJoueursMain( [Optional] bool croupier);
+        void Play( [Optional] bool croupier);
 
     }
 }

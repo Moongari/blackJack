@@ -18,6 +18,7 @@ namespace BlackJack
         private string _blackJackMessage = "Vous etes le vainqueur ! Congratulations ";
         private double _gain = 0;
         private int Max = 0;
+        private static int _cptWinner = 0;
 
         private static Dictionary<Joueur, List<string[]>> dicJoueur = new Dictionary<Joueur, List<string[]>>();
 
@@ -28,6 +29,9 @@ namespace BlackJack
         public bool Croupier { get { return _isCroupier; } set { this._isCroupier = value;} }
 
         public double Gain { get { return _gain; } set { this._gain = value; } }
+        public static int CompteurWinner { get { return _cptWinner; } set { _cptWinner = value; } }
+
+        public static List<Joueur> Joueurs { get { return lstJoueurs;} }
 
 
         public string ErreurMise { get { return _erreurMise; } }
@@ -40,7 +44,7 @@ namespace BlackJack
             this._nom = nom; this._argent = argent; this._mise = mise; 
         }
 
-        public void GiveJoueursMain([Optional] bool croupier)
+        public void Play([Optional] bool croupier)
         {
 
             if(dicJoueur.Count > 0)
@@ -51,24 +55,24 @@ namespace BlackJack
                     Console.WriteLine($" " +
                         $"  Nom :{item.Key.Nom}  " +
                         $"  Mise :{item.Key.Mise} " +
-                        $"  Argent :{item.Key.Argent} " +
+                        $"  Argent :{item.Key.Argent} € " +
                         $"  Carte 1: {item.Value[0][0].ToString()} " +
                         $"  Valeur => {item.Value[0][1].ToString()} " +
-                        //$"  Carte 2: {item.Value[0][2].ToString()} " +
-                        //$"  Valeur =>{item.Value[1][3].ToString()} " +
+                        $"  Carte 2: {item.Value[0][2].ToString()} " +
+                        $"  Valeur =>{item.Value[1][3].ToString()} " +
                         $"  Total : {item.Key.GetPointCarteMainJoueur} points ");
                    
                 }
 
                 Console.WriteLine("");
-                var jouerGagnant = dicJoueur.OrderByDescending(x => x.Key.GetPointCarteMainJoueur).ToList();
+                var joueurParticipant = dicJoueur.OrderByDescending(x => x.Key.GetPointCarteMainJoueur).ToList();
 
 
                 Console.WriteLine("----------------------MEILLEUR JOUEUR DANS L'ordre des Points -------------------------");
                 Console.WriteLine();
                 Console.WriteLine();
 
-                foreach (var j in jouerGagnant)
+                foreach (var j in joueurParticipant)
                 {
                     if (MainJoueur.IsBlackJack)
                     {
@@ -83,18 +87,23 @@ namespace BlackJack
                             Console.WriteLine("---------------------------------------------------------");
                             Console.WriteLine();
                             Console.WriteLine();
+                            _cptWinner++;
                         }
 
                       
                     }
-                    Console.WriteLine($"{j.Key.Nom} => {j.Key.GetPointCarteMainJoueur} points");
+
+                    RealizeGain(j.Key);
+
+                    Console.WriteLine($"{j.Key.Nom} => GAIN : {j.Key.Gain.ToString("0.##")} € Argent: {j.Key.Argent.ToString("0.##")} €  Points :{j.Key.GetPointCarteMainJoueur} points");
 
                     //WinnerPlayer(j.Key, j.Key.GetPointCarteMainJoueur);
+
                     lstJoueurs.Add(j.Key);
                 }
 
 
-                playerPointMoreThanDonneur();
+               playerPointMoreThanDonneur();
 
             }
             else
@@ -141,23 +150,81 @@ namespace BlackJack
         /// </summary>
         /// <param name="j"></param>
         /// <param name="points"></param>
-        public void WinnerPlayer(Joueur j, int points)
+        public void WinnerPlayer(Joueur j, int points,[Optional] bool isCroupier,[Optional] Joueur j2)
         {
-         
+            
 
            if( Max < points) { Max = points; }
 
            
-
-            if (Max >= points && j.GetPointCarteMainJoueur >= Max) 
+           if(isCroupier != true)
             {
-                Console.WriteLine();
-                Console.WriteLine();
-                Console.WriteLine("----------- WINNER IS ------------------------");
-                Console.WriteLine($" Nom : {j.Nom}  Gain : {j.Gain}  Points : {Max} Argent : {j.Argent}");
-                Console.WriteLine("----------------------------------------------");
-                Console.WriteLine();
-                Console.WriteLine();
+                if (Max >= points && j.GetPointCarteMainJoueur >= Max)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine();
+                    Console.WriteLine("---------------------------------    WINNER IS    -------------------------------------------------------");
+                    Console.WriteLine($" Nom : {j.Nom}  Gain : {j.Gain.ToString("0.##")} €  Points : {Max} Argent : {j.Argent.ToString("0.##")}€");
+                    Console.WriteLine("----------------------------------------------------------------------------------------------------------");
+                    Console.WriteLine();
+                    Console.WriteLine();
+                    _cptWinner++;
+                }
+            }
+
+           
+
+            if (isCroupier)
+            {
+                try
+                {
+                    if (j.GetPointCarteMainJoueur == j2.GetPointCarteMainJoueur 
+                        && j.GetPointCarteMainJoueur==Max
+                        && j.GetPointCarteMainJoueur == Max)
+                    {
+
+                        Console.WriteLine();
+                        Console.WriteLine();
+                        Console.WriteLine($"------------------ {j.Nom} ----------------------------");
+                        Console.WriteLine($" Gain : {j.Gain.ToString("0.##")} €  Points : {j.GetPointCarteMainJoueur} Argent : {j.Argent.ToString("0.##")}€");
+                        Console.WriteLine("--------------------------------------------------------");
+                        Console.WriteLine();
+                        Console.WriteLine();
+                        Console.WriteLine($"----------------- {j2.Nom} --------------------------");
+                        Console.WriteLine($" Gain : {j2.Gain.ToString("0.##")} €  Points : {j2.GetPointCarteMainJoueur} Argent : {j2.Argent.ToString("0.##")}€");
+                        Console.WriteLine("------------------------------------------------------");
+                        Console.WriteLine();
+                        Console.WriteLine();
+                        _cptWinner++;
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    Console.WriteLine($"{ex.Message}");
+                }
+              
+            }
+
+            if (j._isCroupier)
+            {
+                try
+                {
+                    Console.WriteLine();
+                    Console.WriteLine();
+                    Console.WriteLine("---------------------------------    CROUPIER   -------------------------------------------------------");
+                    Console.WriteLine($" Nom : {j.Nom}  Gain : {j.Gain.ToString("0.##")} €  Points : {Max} Argent : {j.Argent.ToString("0.##")}€");
+                    Console.WriteLine("----------------------------------------------------------------------------------------------------------");
+                    Console.WriteLine();
+                    Console.WriteLine();
+                    _cptWinner++;
+                }
+                catch (Exception ex)
+                {
+
+                    Console.WriteLine($"{ex.Message}");
+                }
+               
             }
 
            
@@ -178,11 +245,39 @@ namespace BlackJack
                     if (j.GetPointCarteMainJoueur > isCroupier.GetPointCarteMainJoueur)
                     {
 
-                        RealizeGain(j);
+                        //RealizeGain(j);
                         WinnerPlayer(j, j.GetPointCarteMainJoueur);
                     }
+                 
                 }
+
+                if (isCroupier != null)
+                {
+                    if (j.GetPointCarteMainJoueur == isCroupier.GetPointCarteMainJoueur)
+                    {
+
+                        //RealizeGain(j);
+                        WinnerPlayer(j, j.GetPointCarteMainJoueur,isCroupier._isCroupier,isCroupier);
+                    }
+
+                }
+            }
+
+           
+            if(isCroupier != null)
+            {
+
+                int JoueurMaxPoints = (from j in isNotCroupier select j.GetPointCarteMainJoueur).Max();
+              
+                    if (isCroupier.GetPointCarteMainJoueur > JoueurMaxPoints)
+                    {
+
+                        //RealizeGain(j);
+                        WinnerPlayer(isCroupier, isCroupier.GetPointCarteMainJoueur, isCroupier._isCroupier, isCroupier);
+                    }
                
+               
+
             }
         }
 
@@ -208,7 +303,7 @@ namespace BlackJack
                         break;
 
                     case 20:
-                        j.Gain = (0.5 * j.Mise);
+                        j.Gain = (0.8 * j.Mise);
                         j.Argent = j.Argent + j.Gain;
                         break;
 
@@ -217,15 +312,27 @@ namespace BlackJack
                     case 17:
                     case 18:
                     case 19:
+                        j.Gain = (0.5 * j.Mise);
+                        j.Argent = j.Argent + j.Gain;
+                        break;
+
+                    case 10:
+                    case 11:
+                    case 12:
+                    case 13:
+                    case 14:
                         j.Gain = (0.2 * j.Mise);
                         j.Argent = j.Argent + j.Gain;
                         break;
 
                     default:
+                        j.Gain = (0 * j.Mise);
+                        j.Argent = j.Argent + j.Gain;
                         break;
                 }
             }
         }
-       
+
+      
     }
 }
